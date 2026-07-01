@@ -1,0 +1,623 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#f7d985" />
+  <title>Morning Coach</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #fff7e7;
+      --bg2: #f8ead3;
+      --ink: #2d2419;
+      --muted: #756657;
+      --card: rgba(255, 252, 244, 0.92);
+      --card-solid: #fffaf0;
+      --line: rgba(88, 65, 38, 0.15);
+      --gold: #f3b748;
+      --gold2: #ffdf8a;
+      --green: #6fa66a;
+      --blue: #6d95bd;
+      --red: #d06a5b;
+      --purple: #8c72c8;
+      --shadow: 0 18px 40px rgba(74, 50, 20, 0.14);
+      --radius-xl: 28px;
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --tap: 52px;
+      font-family: ui-rounded, "SF Pro Rounded", "SF Pro Display", Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html { background: var(--bg); min-height: 100%; }
+    body {
+      margin: 0;
+      min-height: 100svh;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 18% -8%, rgba(255, 216, 127, 0.95), transparent 32rem),
+        radial-gradient(circle at 102% 8%, rgba(175, 212, 191, 0.7), transparent 24rem),
+        linear-gradient(180deg, #fff4d6 0%, #fff8ea 45%, #f7ead6 100%);
+    }
+
+    button, a { -webkit-tap-highlight-color: transparent; }
+    .wrap {
+      width: min(100%, 920px);
+      margin: 0 auto;
+      padding: max(18px, env(safe-area-inset-top)) 16px max(28px, env(safe-area-inset-bottom));
+    }
+
+    header {
+      display: grid;
+      gap: 12px;
+      padding: 10px 2px 18px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      width: fit-content;
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 252, 244, 0.7);
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.01em;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 12ch;
+      font-size: clamp(40px, 13vw, 78px);
+      line-height: 0.88;
+      letter-spacing: -0.06em;
+    }
+
+    .subtitle {
+      margin: 0;
+      max-width: 44rem;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.42;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 14px;
+    }
+
+    @media (min-width: 760px) {
+      .grid { grid-template-columns: 1.25fr 0.75fr; align-items: start; }
+      .span { grid-column: 1 / -1; }
+      header { grid-template-columns: 1fr auto; align-items: end; }
+      h1 { max-width: 14ch; }
+    }
+
+    .card {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      background: var(--card);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+    }
+
+    .card-inner { padding: 18px; }
+    @media (min-width: 760px) { .card-inner { padding: 24px; } }
+
+    .quest-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 7px;
+      background: linear-gradient(90deg, var(--gold), #f18e6b, #88be82);
+    }
+
+    .card-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+
+    h2, h3 { margin: 0; letter-spacing: -0.035em; }
+    h2 { font-size: 26px; line-height: 1; }
+    h3 { font-size: 18px; }
+
+    .pill {
+      flex: 0 0 auto;
+      min-height: 34px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      padding: 8px 11px;
+      background: rgba(243, 183, 72, 0.18);
+      color: #7b5313;
+      border: 1px solid rgba(123, 83, 19, 0.12);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .quest-name {
+      margin: 6px 0 4px;
+      font-size: clamp(31px, 9vw, 48px);
+      line-height: 0.96;
+      letter-spacing: -0.06em;
+    }
+
+    .microcopy {
+      margin: 0 0 16px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.35;
+    }
+
+    .steps {
+      display: grid;
+      gap: 9px;
+      margin: 16px 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: 38px 1fr;
+      gap: 10px;
+      align-items: center;
+      min-height: 54px;
+      padding: 9px 10px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.54);
+      transition: transform 160ms ease, background 160ms ease, opacity 160ms ease;
+    }
+
+    .step.done { background: rgba(111, 166, 106, 0.13); opacity: 0.72; }
+    .check {
+      width: 36px;
+      height: 36px;
+      border-radius: 13px;
+      border: 1.5px solid rgba(45, 36, 25, 0.2);
+      background: #fffdf7;
+      display: grid;
+      place-items: center;
+      font-weight: 1000;
+      color: transparent;
+      cursor: pointer;
+    }
+    .step.done .check { color: #fff; background: var(--green); border-color: var(--green); }
+    .step-text { font-size: 16px; font-weight: 750; line-height: 1.22; }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .button {
+      min-height: var(--tap);
+      border: 0;
+      border-radius: 18px;
+      padding: 14px 16px;
+      color: var(--ink);
+      background: #fff;
+      box-shadow: inset 0 0 0 1px var(--line);
+      font: inherit;
+      font-weight: 900;
+      font-size: 16px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+    .button.primary {
+      min-height: 64px;
+      color: #2d210c;
+      background: linear-gradient(180deg, #ffe7a2, var(--gold));
+      box-shadow: 0 14px 28px rgba(160, 103, 10, 0.24), inset 0 0 0 1px rgba(116, 78, 18, 0.16);
+      font-size: 19px;
+    }
+    .button.green { background: rgba(111, 166, 106, 0.16); color: #345f31; }
+    .button.blue { background: rgba(109, 149, 189, 0.16); color: #315574; }
+    .button.red { background: rgba(208, 106, 91, 0.14); color: #873e33; }
+    .button.purple { background: rgba(140, 114, 200, 0.15); color: #5d4796; }
+    .button:active { transform: translateY(1px) scale(0.99); }
+    .button:focus-visible, .check:focus-visible { outline: 3px solid rgba(72, 112, 178, 0.45); outline-offset: 2px; }
+
+    @media (min-width: 460px) {
+      .actions.split { grid-template-columns: 1fr 1fr; }
+      .actions.triple { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    .timer-face {
+      display: grid;
+      place-items: center;
+      min-height: 168px;
+      margin: 8px 0 14px;
+      border-radius: 24px;
+      background:
+        radial-gradient(circle at center, #fffdf7 0 50%, transparent 51%),
+        conic-gradient(from -90deg, var(--gold) var(--progress, 0%), rgba(45, 36, 25, 0.08) 0);
+    }
+    .time {
+      display: grid;
+      place-items: center;
+      width: 132px;
+      height: 132px;
+      border-radius: 50%;
+      background: #fffdf7;
+      font-size: 40px;
+      font-weight: 1000;
+      letter-spacing: -0.07em;
+      box-shadow: inset 0 0 0 1px var(--line);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    .stat {
+      padding: 12px 10px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.58);
+      border: 1px solid var(--line);
+    }
+    .stat b { display: block; font-size: 22px; line-height: 1; letter-spacing: -0.04em; }
+    .stat span { display: block; margin-top: 5px; color: var(--muted); font-size: 12px; font-weight: 800; }
+
+    .boss {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-top: 12px;
+      padding: 13px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.5);
+    }
+    .goblin {
+      flex: 0 0 auto;
+      width: 62px;
+      height: 62px;
+      display: grid;
+      place-items: center;
+      border-radius: 22px;
+      background: #e7f2d9;
+      font-size: 35px;
+      transition: transform 240ms ease, filter 240ms ease;
+    }
+    .boss.weakened .goblin { transform: scale(0.78) rotate(-7deg); filter: saturate(0.8); }
+    .boss p { margin: 4px 0 0; color: var(--muted); font-size: 14px; line-height: 1.3; }
+
+    .ready-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .toast {
+      position: fixed;
+      left: 16px;
+      right: 16px;
+      bottom: calc(16px + env(safe-area-inset-bottom));
+      z-index: 4;
+      transform: translateY(180%);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 260ms ease, opacity 180ms ease;
+      border-radius: 18px;
+      padding: 14px 16px;
+      background: rgba(45, 36, 25, 0.92);
+      color: #fff9ea;
+      font-weight: 850;
+      box-shadow: 0 20px 42px rgba(0, 0, 0, 0.24);
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    .footer-note {
+      margin: 18px 4px 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+      text-align: center;
+    }
+
+    .tiny-link {
+      color: inherit;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 3px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header>
+      <div>
+        <div class="eyebrow"><span>🌤️</span><span id="dateLabel">Today</span></div>
+        <h1>Morning Quest</h1>
+        <p class="subtitle">A tiny, no-shame launchpad. Start small, log the win, then get ready for the day.</p>
+      </div>
+    </header>
+
+    <section class="grid" aria-label="Morning Coach">
+      <article class="card quest-card">
+        <div class="card-inner">
+          <div class="card-title">
+            <div>
+              <h2>Today’s MVWorkout</h2>
+              <div class="quest-name" id="questName">Wake the Body</div>
+            </div>
+            <div class="pill">2–5 min</div>
+          </div>
+          <p class="microcopy" id="questCopy">Minimum viable. No heroic effort required.</p>
+          <ul class="steps" id="questSteps"></ul>
+          <p class="microcopy" id="bonusCopy"></p>
+          <div class="boss" id="bossBox">
+            <div class="goblin" aria-hidden="true">🐉</div>
+            <div>
+              <h3>Boss: Inertia Goblin</h3>
+              <p id="bossCopy">It loses power when you check off tiny actions.</p>
+            </div>
+          </div>
+          <div class="actions">
+            <button class="button primary" id="doneBtn">DONE counts, even tiny ✅</button>
+          </div>
+          <div class="actions triple">
+            <button class="button blue" data-mood="EASIER">Make it easier</button>
+            <button class="button purple" data-mood="SORE">Sore/recovery</button>
+            <button class="button red" data-mood="SKIP">Skip, no shame</button>
+          </div>
+        </div>
+      </article>
+
+      <aside class="card">
+        <div class="card-inner">
+          <div class="card-title">
+            <h2>Quest Timer</h2>
+            <div class="pill" id="timerPill">Ready</div>
+          </div>
+          <div class="timer-face" id="timerFace" style="--progress: 0%">
+            <div class="time" id="timeText">2:00</div>
+          </div>
+          <div class="actions split">
+            <button class="button green" id="timerStart">Start</button>
+            <button class="button" id="timerReset">Reset</button>
+          </div>
+          <div class="stats" aria-label="Progress stats">
+            <div class="stat"><b id="xpStat">0</b><span>XP</span></div>
+            <div class="stat"><b id="streakStat">0</b><span>streak</span></div>
+            <div class="stat"><b id="winsStat">0</b><span>wins</span></div>
+          </div>
+        </div>
+      </aside>
+
+      <article class="card span">
+        <div class="card-inner">
+          <div class="card-title">
+            <div>
+              <h2>Get-ready checkpoint</h2>
+              <p class="microcopy" style="margin-top: 6px; margin-bottom: 0;">After movement, pick the next tiny domino.</p>
+            </div>
+            <div class="pill">Next</div>
+          </div>
+          <div class="ready-list" id="readySteps"></div>
+          <div class="actions split">
+            <a class="button green" id="textDone" href="sms:&body=DONE">Text DONE to Hermes</a>
+            <button class="button" id="copySummary">Copy progress note</button>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <p class="footer-note">Progress is saved privately in this browser on this phone. iMessage links open Messages; they do not send automatically.</p>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const workouts = [
+      {
+        name: "Wake the Body",
+        copy: "Light the pilot flame. Stop before it becomes a production.",
+        steps: ["5 sit-to-stands or slow squats", "5 knee pushups, or 5 regular pushups if smooth", "20 seconds marching in place", "1 big stretch"],
+        bonus: "Optional treasure: pick up one dumbbell safely, set it down, and walk away victorious."
+      },
+      {
+        name: "Inertia Goblin",
+        copy: "The only goal is to break the freeze with tiny motion.",
+        steps: ["Put feet on floor + drink water", "5 knee pushups, or 5 regular pushups if smooth", "5 gentle hip hinges, no weight", "30 seconds easy walking/marching"],
+        bonus: "Optional treasure: 10-second suitcase hold with one dumbbell per side, only if it feels easy."
+      },
+      {
+        name: "Starter Engine",
+        copy: "Low drama. Smooth reps. Leave energy in the tank.",
+        steps: ["Stand up and roll shoulders 5 times", "5 sit-to-stands", "5 countertop, knee, or regular pushups", "20 seconds gentle march"],
+        bonus: "Optional treasure: one slow dumbbell pickup and put-down. No reps chase today."
+      },
+      {
+        name: "Minimum Win Mode",
+        copy: "For foggy mornings: make the win comically small.",
+        steps: ["Shoes or workout clothes on", "3 sit-to-stands", "3 knee or regular pushups", "One stretch while breathing slowly"],
+        bonus: "Optional treasure: repeat once if your body says yes."
+      }
+    ];
+
+    const ready = ["Bathroom", "Get dressed", "Water or breakfast", "First outside-world step"];
+    const params = new URLSearchParams(location.search);
+    const today = params.get("day") || new Date().toISOString().slice(0, 10);
+    const stateKey = "morning-coach-v1";
+    const dayKey = `${stateKey}:${today}`;
+    const $ = (id) => document.getElementById(id);
+
+    function hashDay(s) {
+      let h = 2166136261;
+      for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
+      return Math.abs(h);
+    }
+
+    const requestedWorkout = params.get("workout");
+    const quest = workouts.find(w => w.name.toLowerCase() === String(requestedWorkout || "").toLowerCase()) || workouts[hashDay(today) % workouts.length];
+    const dateObj = new Date(`${today}T12:00:00`);
+    $("dateLabel").textContent = dateObj.toLocaleDateString(undefined, { weekday: "long", month: "short", day: "numeric" });
+    $("questName").textContent = quest.name;
+    $("questCopy").textContent = quest.copy;
+    $("bonusCopy").textContent = quest.bonus;
+
+    function getStore() {
+      try { return JSON.parse(localStorage.getItem(stateKey)) || { xp: 0, wins: 0, streak: 0, lastDone: "" }; }
+      catch { return { xp: 0, wins: 0, streak: 0, lastDone: "" }; }
+    }
+    function setStore(v) { localStorage.setItem(stateKey, JSON.stringify(v)); }
+    function getDay() {
+      try { return JSON.parse(localStorage.getItem(dayKey)) || { steps: [], ready: [], done: false, mood: "" }; }
+      catch { return { steps: [], ready: [], done: false, mood: "" }; }
+    }
+    function setDay(v) { localStorage.setItem(dayKey, JSON.stringify(v)); }
+
+    let day = getDay();
+    let store = getStore();
+
+    function toast(msg) {
+      const t = $("toast");
+      t.textContent = msg;
+      t.classList.add("show");
+      clearTimeout(t._hide);
+      t._hide = setTimeout(() => t.classList.remove("show"), 2800);
+    }
+
+    function renderSteps() {
+      const questSteps = $("questSteps");
+      questSteps.innerHTML = "";
+      quest.steps.forEach((text, i) => {
+        const li = document.createElement("li");
+        li.className = `step ${day.steps.includes(i) ? "done" : ""}`;
+        li.innerHTML = `<button class="check" aria-label="Toggle step ${i + 1}">✓</button><div class="step-text"></div>`;
+        li.querySelector(".step-text").textContent = text;
+        li.querySelector(".check").addEventListener("click", () => {
+          day.steps = day.steps.includes(i) ? day.steps.filter(x => x !== i) : [...day.steps, i];
+          setDay(day); renderAll();
+        });
+        questSteps.appendChild(li);
+      });
+
+      const readySteps = $("readySteps");
+      readySteps.innerHTML = "";
+      ready.forEach((text, i) => {
+        const row = document.createElement("div");
+        row.className = `step ${day.ready.includes(i) ? "done" : ""}`;
+        row.innerHTML = `<button class="check" aria-label="Toggle ${text}">✓</button><div class="step-text"></div>`;
+        row.querySelector(".step-text").textContent = text;
+        row.querySelector(".check").addEventListener("click", () => {
+          day.ready = day.ready.includes(i) ? day.ready.filter(x => x !== i) : [...day.ready, i];
+          setDay(day); renderAll();
+        });
+        readySteps.appendChild(row);
+      });
+    }
+
+    function daysBetween(a, b) {
+      return Math.round((new Date(`${b}T12:00:00`) - new Date(`${a}T12:00:00`)) / 86400000);
+    }
+
+    function logDone() {
+      if (!day.done) {
+        day.done = true;
+        day.steps = [...new Set([...day.steps, 0])];
+        day.doneAt = new Date().toISOString();
+        store.xp = (store.xp || 0) + 10;
+        store.wins = (store.wins || 0) + 1;
+        if (store.lastDone === today) {
+          // no-op
+        } else if (store.lastDone && daysBetween(store.lastDone, today) === 1) {
+          store.streak = (store.streak || 0) + 1;
+        } else {
+          store.streak = 1;
+        }
+        store.lastDone = today;
+        setStore(store);
+        setDay(day);
+      }
+      toast("Logged: DONE ✅ +10 XP. Tiny counts.");
+      renderAll();
+    }
+
+    function renderStats() {
+      $("xpStat").textContent = store.xp || 0;
+      $("streakStat").textContent = store.streak || 0;
+      $("winsStat").textContent = store.wins || 0;
+      const progress = day.steps.length / quest.steps.length;
+      $("bossBox").classList.toggle("weakened", progress > 0 || day.done);
+      $("bossCopy").textContent = day.done ? "Defeated for today. Future-you receives +1 smoother launch." : progress > 0 ? "It is already smaller. Tiny actions are working." : "It loses power when you check off tiny actions.";
+      $("doneBtn").textContent = day.done ? "DONE logged ✅" : "DONE counts, even tiny ✅";
+    }
+
+    function renderLinks() {
+      const body = encodeURIComponent(day.done ? "DONE" : `Morning Coach: ${quest.name} — DONE`);
+      $("textDone").setAttribute("href", `sms:&body=${body}`);
+    }
+
+    function renderAll() { renderSteps(); renderStats(); renderLinks(); }
+
+    $("doneBtn").addEventListener("click", logDone);
+    document.querySelectorAll("[data-mood]").forEach(btn => btn.addEventListener("click", () => {
+      day.mood = btn.dataset.mood;
+      if (day.mood === "EASIER") {
+        day.steps = day.steps.slice(0, 1);
+        toast("Downshifted: one tiny action is enough today.");
+      } else if (day.mood === "SORE") {
+        toast("Recovery mode counts: water + gentle stretch only.");
+      } else {
+        toast("Skipped without shame. Water or one stretch can still count.");
+      }
+      setDay(day); renderAll();
+    }));
+
+    $("copySummary").addEventListener("click", async () => {
+      const note = day.done ? `DONE — ${quest.name}. Felt: ${day.mood || "not logged yet"}` : `${quest.name}: ${day.steps.length}/${quest.steps.length} tiny steps done`;
+      try { await navigator.clipboard.writeText(note); toast("Copied progress note."); }
+      catch { toast(note); }
+    });
+
+    let total = 120, remaining = total, timer = null;
+    function drawTimer() {
+      const m = Math.floor(remaining / 60), s = String(remaining % 60).padStart(2, "0");
+      $("timeText").textContent = `${m}:${s}`;
+      const pct = ((total - remaining) / total) * 100;
+      $("timerFace").style.setProperty("--progress", `${pct}%`);
+      $("timerPill").textContent = timer ? "Moving" : remaining === total ? "Ready" : remaining === 0 ? "Complete" : "Paused";
+      $("timerStart").textContent = timer ? "Pause" : remaining === 0 ? "Again" : "Start";
+    }
+    $("timerStart").addEventListener("click", () => {
+      if (remaining === 0) remaining = total;
+      if (timer) { clearInterval(timer); timer = null; drawTimer(); return; }
+      timer = setInterval(() => {
+        remaining = Math.max(0, remaining - 1);
+        drawTimer();
+        if (remaining === 0) { clearInterval(timer); timer = null; toast("Timer complete. That counts."); drawTimer(); }
+      }, 1000);
+      drawTimer();
+    });
+    $("timerReset").addEventListener("click", () => { clearInterval(timer); timer = null; remaining = total; drawTimer(); });
+
+    renderAll();
+    drawTimer();
+  </script>
+</body>
+</html>
