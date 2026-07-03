@@ -121,8 +121,6 @@
             <div class="goblin" aria-hidden="true">🐉</div>
             <div><h3>Boss: Inertia Goblin</h3><p class="micro" id="bossCopy">It loses power when you check off tiny actions.</p></div>
           </div>
-          <div class="timer-face" id="timerFace" style="--progress: 0%"><div class="time" id="timeText">2:00</div></div>
-          <div class="actions split"><button class="button green" id="timerStart">Start timer</button><button class="button" id="timerReset">Reset</button></div>
         </article>
 
         <article class="page" data-page="effort">
@@ -151,19 +149,9 @@
           <div class="boss" id="bonusBoss"><div class="goblin" aria-hidden="true">⚔️</div><div><h3>Extra sparkle</h3><p class="micro">Level 2 adds +5 XP and charts as a beyond-minimum win.</p></div></div>
         </article>
 
-        <article class="page" data-page="ready">
-          <span class="label">Page 4 · Get ready</span>
-          <h2>Launch mode</h2>
-          <p class="micro">Movement is done. Now pick the next tiny domino so the morning actually launches.</p>
-          <ul class="steps" id="readySteps"></ul>
-          <div class="actions split">
-            <a class="button green" id="textDone" href="sms:&body=DONE">Text DONE</a>
-            <button class="button" id="copySummary">Copy progress note</button>
-          </div>
-        </article>
 
         <article class="page" data-page="progress">
-          <span class="label">Page 5 · Progress</span>
+          <span class="label">Page 4 · Progress</span>
           <h2>Quest log</h2>
           <p class="micro">Saved privately in this browser. Gold = MVW wins. Purple = Level 2 pushes.</p>
           <div class="stats">
@@ -196,8 +184,7 @@
       { name:"Level 2: Strong Start", steps:["6 controlled pushups: countertop, knee, or regular", "8 gentle hip hinges, no weight unless it feels very easy", "20-second suitcase hold per side, one dumbbell only if safe"] },
       { name:"Level 2: Momentum Token", steps:["Repeat your favorite MVW move once more", "30 seconds easy cardio: march, walk, or stairs", "One long stretch and water"] }
     ];
-    const ready = ["Bathroom / wash face / shower", "Get dressed", "Water or breakfast", "First outside-world step"];
-    const pages = ["mvw", "effort", "level2", "ready", "progress"];
+    const pages = ["mvw", "effort", "level2", "progress"];
     const params = new URLSearchParams(location.search);
     const today = params.get("day") || new Date().toISOString().slice(0,10);
     const stateKey = "morning-coach-v2";
@@ -208,13 +195,13 @@
     const quest = workouts.find(w => w.name.toLowerCase() === String(requestedWorkout || "").toLowerCase()) || workouts[hashDay(today) % workouts.length];
     const bonus = bonusRounds[hashDay(`bonus-${today}`) % bonusRounds.length];
     const defaultStore = { xp:0, wins:0, bonusWins:0, streak:0, lastDone:"", history:{} };
-    const defaultDay = { page:"mvw", steps:[], bonusSteps:[], ready:[], done:false, bonusDone:false, effort:"", skipped:false, sore:false, pain:false };
+    const defaultDay = { page:"mvw", steps:[], bonusSteps:[], done:false, bonusDone:false, effort:"", skipped:false, sore:false, pain:false };
     function readJSON(key, fallback){ try { return { ...fallback, ...(JSON.parse(localStorage.getItem(key)) || {}) }; } catch { return { ...fallback }; } }
     function getStore(){ const s = readJSON(stateKey, defaultStore); s.history = s.history || {}; return s; }
     function setStore(v){ localStorage.setItem(stateKey, JSON.stringify(v)); }
     function getDay(){ return readJSON(dayKey, defaultDay); }
     function setDay(v){ localStorage.setItem(dayKey, JSON.stringify(v)); }
-    let store = getStore(); let day = getDay(); let current = day.page || "mvw";
+    let store = getStore(); let day = getDay(); let current = pages.includes(day.page) ? day.page : "mvw";
 
     $("dateLabel").textContent = new Date(`${today}T12:00:00`).toLocaleDateString(undefined, { weekday:"long", month:"short", day:"numeric" });
     $("questName").textContent = quest.name; $("questCopy").textContent = quest.copy; $("bonusName").textContent = bonus.name;
@@ -222,30 +209,24 @@
     function daysBetween(a,b){ return Math.round((new Date(`${b}T12:00:00`) - new Date(`${a}T12:00:00`))/86400000); }
     function saveHistory(){ store.history[today] = { done:!!day.done, bonusDone:!!day.bonusDone, effort:day.effort||"", skipped:!!day.skipped, sore:!!day.sore, pain:!!day.pain, workout:quest.name, xp:(day.done?10:0)+(day.bonusDone?5:0) }; setStore(store); }
     function bankMVW(){ if(!day.done){ day.done=true; day.doneAt=new Date().toISOString(); day.steps=[...Array(quest.steps.length).keys()]; store.xp=(store.xp||0)+10; store.wins=(store.wins||0)+1; if(store.lastDone===today){} else if(store.lastDone && daysBetween(store.lastDone,today)===1){ store.streak=(store.streak||0)+1; } else { store.streak=1; } store.lastDone=today; } saveHistory(); setDay(day); }
-    function completeBonus(){ bankMVW(); if(!day.bonusDone){ day.bonusDone=true; day.bonusAt=new Date().toISOString(); day.bonusSteps=[...Array(bonus.steps.length).keys()]; store.xp=(store.xp||0)+5; store.bonusWins=(store.bonusWins||0)+1; toast("Bonus logged ✅ +5 XP. Beyond minimum!"); } saveHistory(); setDay(day); go("ready"); }
+    function completeBonus(){ bankMVW(); if(!day.bonusDone){ day.bonusDone=true; day.bonusAt=new Date().toISOString(); day.bonusSteps=[...Array(bonus.steps.length).keys()]; store.xp=(store.xp||0)+5; store.bonusWins=(store.bonusWins||0)+1; toast("Bonus logged ✅ +5 XP. Beyond minimum!"); } saveHistory(); setDay(day); go("progress"); }
     function go(page){ current=page; day.page=page; setDay(day); renderAll(); window.scrollTo({top:0, behavior:"smooth"}); }
     function toggle(arrName, i){ const arr=day[arrName] || []; day[arrName] = arr.includes(i) ? arr.filter(x=>x!==i) : [...arr,i]; setDay(day); renderAll(); }
     function renderList(id, items, arrName){ const ul=$(id); ul.innerHTML=""; items.forEach((text,i)=>{ const li=document.createElement("li"); li.className=`step ${(day[arrName]||[]).includes(i)?"done":""}`; li.innerHTML=`<button class="check" aria-label="Toggle step ${i+1}">✓</button><div class="step-text"></div>`; li.querySelector(".step-text").textContent=text; li.querySelector(".check").addEventListener("click",()=>toggle(arrName,i)); ul.appendChild(li); }); }
-    function renderPages(){ document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active", p.dataset.page===current)); $("dots").innerHTML=pages.map(p=>`<span class="dot ${p===current?'active':''}"></span>`).join(""); const titles={mvw:"Tiny start. Real push. No shame.",effort:"Bank the win, then choose the push.",level2:"Beyond minimum: one more small round.",ready:"Turn movement into a smoother launch.",progress:"Charts make the invisible visible."}; $("subtitle").textContent=titles[current]||titles.mvw; }
+    function renderPages(){ document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active", p.dataset.page===current)); $("dots").innerHTML=pages.map(p=>`<span class="dot ${p===current?'active':''}"></span>`).join(""); const titles={mvw:"Tiny start. Real push. No shame.",effort:"Bank the win, then choose the push.",level2:"Beyond minimum: one more small round.",progress:"Charts make the invisible visible."}; $("subtitle").textContent=titles[current]||titles.mvw; }
     function renderStats(){ store=getStore(); day=getDay(); $("todaySteps").textContent=`${day.steps.length}/${quest.steps.length}`; $("todayLevel").textContent=day.bonusDone?"2":day.done?"1":"0"; $("todayMood").textContent=day.effort || "—"; $("xpStat").textContent=store.xp||0; $("streakStat").textContent=store.streak||0; $("winsStat").textContent=store.wins||0; $("bonusStat").textContent=store.bonusWins||0; $("bossBox").classList.toggle("defeated", day.done || day.steps.length>0); $("bossCopy").textContent = day.done ? "Defeated. MVW win is banked." : day.steps.length ? "It is already smaller. Tiny actions are working." : "It loses power when you check off tiny actions."; }
     function renderChart(){ const chart=$("chart"); chart.innerHTML=""; const dates=[]; const base=new Date(`${today}T12:00:00`); for(let i=13;i>=0;i--){ const d=new Date(base); d.setDate(base.getDate()-i); dates.push(d.toISOString().slice(0,10)); } const max=15; dates.forEach(d=>{ const rec=(store.history||{})[d] || {}; const xp=rec.xp||0; const wrap=document.createElement("div"); wrap.className="bar-wrap"; const bar=document.createElement("div"); bar.className=`bar ${rec.bonusDone?'level2':''}`; bar.style.height=`${Math.max(4,(xp/max)*100)}%`; bar.title=`${d}: ${xp} XP`; const label=document.createElement("div"); label.className="bar-label"; label.textContent=new Date(`${d}T12:00:00`).toLocaleDateString(undefined,{weekday:"short"}).slice(0,1); wrap.append(bar,label); chart.appendChild(wrap); }); const hist=Object.values(store.history||{}); const wins=hist.filter(x=>x.done).length, b=hist.filter(x=>x.bonusDone).length; $("insight").textContent = wins ? `You have ${wins} MVW wins and ${b} Level 2 pushes in this browser. Beyond-minimum ratio: ${Math.round((b/Math.max(wins,1))*100)}%.` : "Do today’s MVW to start the chart."; }
-    function renderLinks(){ const summary = day.bonusDone ? `DONE MORE — ${quest.name}, ${day.effort}` : day.done ? `DONE — ${quest.name}, ${day.effort || 'effort not logged'}` : `${quest.name}: ${day.steps.length}/${quest.steps.length}`; $("textDone").href = `sms:&body=${encodeURIComponent(summary)}`; }
     function navButton(text, cls, fn){ const b=document.createElement("button"); b.className=`button ${cls||""}`; b.textContent=text; b.addEventListener("click", fn); return b; }
     function renderNav(){ const nav=$("navActions"); nav.innerHTML=""; if(current==="mvw"){ nav.append(navButton("DONE · bank MVW ✅","primary",()=>{ bankMVW(); toast("MVW banked ✅ +10 XP"); go("effort"); }), navButton("Easier / sore / skip","",()=>go("effort"))); }
-      else if(current==="effort"){ nav.append(navButton("Progress chart","",()=>go("progress")), navButton("Get ready","green",()=>go("ready"))); }
-      else if(current==="level2"){ nav.append(navButton("DONE +5 XP","primary",completeBonus), navButton("Skip, bank MVW","",()=>{ bankMVW(); toast("MVW banked. Bonus skipped without shame."); go("ready"); })); }
-      else if(current==="ready"){ nav.append(navButton("Progress chart","primary",()=>go("progress")), navButton("Back to Level 2","purple",()=>go("level2"))); }
-      else { nav.append(navButton("Today’s MVW","primary",()=>go("mvw")), navButton("Get ready","green",()=>go("ready"))); } }
-    function renderAll(){ day=getDay(); current=day.page||current; renderPages(); renderList("questSteps", quest.steps, "steps"); renderList("bonusSteps", bonus.steps, "bonusSteps"); renderList("readySteps", ready, "ready"); renderStats(); renderChart(); renderLinks(); renderNav(); }
+      else if(current==="effort"){ nav.append(navButton("Progress chart","",()=>go("progress")), navButton("Back to MVW","green",()=>go("mvw"))); }
+      else if(current==="level2"){ nav.append(navButton("DONE +5 XP","primary",completeBonus), navButton("Skip, bank MVW","",()=>{ bankMVW(); toast("MVW banked. Bonus skipped without shame."); go("progress"); })); }
+      else { nav.append(navButton("Today’s MVW","primary",()=>go("mvw")), navButton("Level 2","purple",()=>go("level2"))); } }
+    function renderAll(){ day=getDay(); current=pages.includes(day.page) ? day.page : current; if(!pages.includes(current)) current="mvw"; renderPages(); renderList("questSteps", quest.steps, "steps"); renderList("bonusSteps", bonus.steps, "bonusSteps"); renderStats(); renderChart(); renderNav(); }
 
-    document.querySelectorAll("[data-effort]").forEach(btn=>btn.addEventListener("click",()=>{ bankMVW(); day.effort=btn.dataset.effort; if(day.effort==="EASY" || day.effort==="OKAY"){ toast(`${day.effort} logged. Level 2 unlocked ⚔️`); setDay(day); saveHistory(); go("level2"); } else if(day.effort==="HARD"){ toast("HARD logged. MVW is enough today."); setDay(day); saveHistory(); go("ready"); } else { day.sore=true; toast("TOO MUCH logged. Recovery mode."); setDay(day); saveHistory(); go("ready"); } }));
-    $("copySummary").addEventListener("click", async()=>{ const note = day.bonusDone ? `DONE MORE — ${quest.name}. Effort: ${day.effort}` : day.done ? `DONE — ${quest.name}. Effort: ${day.effort || 'not logged'}` : `${quest.name}: ${day.steps.length}/${quest.steps.length} steps`; try{ await navigator.clipboard.writeText(note); toast("Copied progress note."); } catch { toast(note); } });
+    document.querySelectorAll("[data-effort]").forEach(btn=>btn.addEventListener("click",()=>{ bankMVW(); day.effort=btn.dataset.effort; if(day.effort==="EASY" || day.effort==="OKAY"){ toast(`${day.effort} logged. Level 2 unlocked ⚔️`); setDay(day); saveHistory(); go("level2"); } else if(day.effort==="HARD"){ toast("HARD logged. MVW is enough today."); setDay(day); saveHistory(); go("progress"); } else { day.sore=true; toast("TOO MUCH logged. Recovery mode."); setDay(day); saveHistory(); go("progress"); } }));
     $("exportBtn").addEventListener("click", async()=>{ const text = Object.entries(store.history||{}).sort().slice(-14).map(([d,r])=>`${d}: ${r.done?'MVW':'—'} ${r.bonusDone?'+ Level2':''} ${r.effort||''}`).join("\n") || "No quest log yet"; try{ await navigator.clipboard.writeText(text); toast("Copied 14-day summary."); } catch { toast(text); } });
     $("clearToday").addEventListener("click",()=>{ localStorage.removeItem(dayKey); delete store.history[today]; setStore(store); day=getDay(); current="mvw"; toast("Today reset locally."); renderAll(); });
-    let total=120, remaining=total, timer=null; function drawTimer(){ const m=Math.floor(remaining/60), s=String(remaining%60).padStart(2,"0"); $("timeText").textContent=`${m}:${s}`; $("timerFace").style.setProperty("--progress", `${((total-remaining)/total)*100}%`); $("timerStart").textContent=timer?"Pause timer":remaining===0?"Again":"Start timer"; }
-    $("timerStart").addEventListener("click",()=>{ if(remaining===0) remaining=total; if(timer){ clearInterval(timer); timer=null; drawTimer(); return; } timer=setInterval(()=>{ remaining=Math.max(0, remaining-1); drawTimer(); if(remaining===0){ clearInterval(timer); timer=null; toast("Timer complete. That counts."); drawTimer(); } },1000); drawTimer(); });
-    $("timerReset").addEventListener("click",()=>{ clearInterval(timer); timer=null; remaining=total; drawTimer(); });
-    renderAll(); drawTimer();
+    renderAll();
   </script>
 </body>
 </html>
