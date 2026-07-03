@@ -4,620 +4,248 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#f7d985" />
-  <title>Morning Coach</title>
+  <title>Morning Coach Quest Board</title>
   <style>
     :root {
       color-scheme: light;
       --bg: #fff7e7;
-      --bg2: #f8ead3;
       --ink: #2d2419;
-      --muted: #756657;
-      --card: rgba(255, 252, 244, 0.92);
-      --card-solid: #fffaf0;
-      --line: rgba(88, 65, 38, 0.15);
+      --muted: #746555;
+      --card: rgba(255, 252, 244, 0.94);
+      --line: rgba(88, 65, 38, 0.16);
       --gold: #f3b748;
-      --gold2: #ffdf8a;
+      --gold2: #ffe59b;
       --green: #6fa66a;
       --blue: #6d95bd;
       --red: #d06a5b;
       --purple: #8c72c8;
-      --shadow: 0 18px 40px rgba(74, 50, 20, 0.14);
+      --shadow: 0 18px 44px rgba(74, 50, 20, 0.15);
       --radius-xl: 28px;
-      --radius-lg: 22px;
-      --radius-md: 16px;
-      --tap: 52px;
+      --radius-lg: 20px;
+      --tap: 56px;
       font-family: ui-rounded, "SF Pro Rounded", "SF Pro Display", Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
     }
-
     * { box-sizing: border-box; }
-    html { background: var(--bg); min-height: 100%; }
+    html { min-height: 100%; background: var(--bg); }
     body {
       margin: 0;
       min-height: 100svh;
       color: var(--ink);
       background:
-        radial-gradient(circle at 18% -8%, rgba(255, 216, 127, 0.95), transparent 32rem),
-        radial-gradient(circle at 102% 8%, rgba(175, 212, 191, 0.7), transparent 24rem),
-        linear-gradient(180deg, #fff4d6 0%, #fff8ea 45%, #f7ead6 100%);
+        radial-gradient(circle at 12% -8%, rgba(255, 221, 137, .96), transparent 32rem),
+        radial-gradient(circle at 108% 4%, rgba(179, 218, 193, .74), transparent 25rem),
+        linear-gradient(180deg, #fff4d6 0%, #fff9ef 48%, #f6ead7 100%);
     }
-
     button, a { -webkit-tap-highlight-color: transparent; }
-    .wrap {
-      width: min(100%, 920px);
-      margin: 0 auto;
-      padding: max(18px, env(safe-area-inset-top)) 16px max(28px, env(safe-area-inset-bottom));
-    }
-
-    header {
-      display: grid;
-      gap: 12px;
-      padding: 10px 2px 18px;
-    }
-
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      width: fit-content;
-      padding: 8px 12px;
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      background: rgba(255, 252, 244, 0.7);
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 800;
-      letter-spacing: 0.01em;
-    }
-
-    h1 {
-      margin: 0;
-      max-width: 12ch;
-      font-size: clamp(40px, 13vw, 78px);
-      line-height: 0.88;
-      letter-spacing: -0.06em;
-    }
-
-    .subtitle {
-      margin: 0;
-      max-width: 44rem;
-      color: var(--muted);
-      font-size: 17px;
-      line-height: 1.42;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr);
-      gap: 14px;
-    }
-
-    @media (min-width: 760px) {
-      .grid { grid-template-columns: 1.25fr 0.75fr; align-items: start; }
-      .span { grid-column: 1 / -1; }
-      header { grid-template-columns: 1fr auto; align-items: end; }
-      h1 { max-width: 14ch; }
-    }
-
-    .card {
-      position: relative;
-      overflow: hidden;
-      border: 1px solid var(--line);
-      border-radius: var(--radius-xl);
-      background: var(--card);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(18px);
-    }
-
-    .card-inner { padding: 18px; }
-    @media (min-width: 760px) { .card-inner { padding: 24px; } }
-
-    .quest-card::before {
-      content: "";
-      position: absolute;
-      inset: 0 0 auto 0;
-      height: 7px;
-      background: linear-gradient(90deg, var(--gold), #f18e6b, #88be82);
-    }
-
-    .card-title {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      align-items: flex-start;
-      margin-bottom: 12px;
-    }
-
-    h2, h3 { margin: 0; letter-spacing: -0.035em; }
-    h2 { font-size: 26px; line-height: 1; }
-    h3 { font-size: 18px; }
-
-    .pill {
-      flex: 0 0 auto;
-      min-height: 34px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 999px;
-      padding: 8px 11px;
-      background: rgba(243, 183, 72, 0.18);
-      color: #7b5313;
-      border: 1px solid rgba(123, 83, 19, 0.12);
-      font-size: 13px;
-      font-weight: 900;
-    }
-
-    .quest-name {
-      margin: 6px 0 4px;
-      font-size: clamp(31px, 9vw, 48px);
-      line-height: 0.96;
-      letter-spacing: -0.06em;
-    }
-
-    .microcopy {
-      margin: 0 0 16px;
-      color: var(--muted);
-      font-size: 15px;
-      line-height: 1.35;
-    }
-
-    .steps {
-      display: grid;
-      gap: 9px;
-      margin: 16px 0;
-      padding: 0;
-      list-style: none;
-    }
-
-    .step {
-      display: grid;
-      grid-template-columns: 38px 1fr;
-      gap: 10px;
-      align-items: center;
-      min-height: 54px;
-      padding: 9px 10px;
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      background: rgba(255, 255, 255, 0.54);
-      transition: transform 160ms ease, background 160ms ease, opacity 160ms ease;
-    }
-
-    .step.done { background: rgba(111, 166, 106, 0.13); opacity: 0.72; }
-    .check {
-      width: 36px;
-      height: 36px;
-      border-radius: 13px;
-      border: 1.5px solid rgba(45, 36, 25, 0.2);
-      background: #fffdf7;
-      display: grid;
-      place-items: center;
-      font-weight: 1000;
-      color: transparent;
-      cursor: pointer;
-    }
-    .step.done .check { color: #fff; background: var(--green); border-color: var(--green); }
-    .step-text { font-size: 16px; font-weight: 750; line-height: 1.22; }
-
-    .actions {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 10px;
-      margin-top: 16px;
-    }
-
-    .button {
-      min-height: var(--tap);
-      border: 0;
-      border-radius: 18px;
-      padding: 14px 16px;
-      color: var(--ink);
-      background: #fff;
-      box-shadow: inset 0 0 0 1px var(--line);
-      font: inherit;
-      font-weight: 900;
-      font-size: 16px;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      cursor: pointer;
-    }
-    .button.primary {
-      min-height: 64px;
-      color: #2d210c;
-      background: linear-gradient(180deg, #ffe7a2, var(--gold));
-      box-shadow: 0 14px 28px rgba(160, 103, 10, 0.24), inset 0 0 0 1px rgba(116, 78, 18, 0.16);
-      font-size: 19px;
-    }
-    .button.green { background: rgba(111, 166, 106, 0.16); color: #345f31; }
-    .button.blue { background: rgba(109, 149, 189, 0.16); color: #315574; }
-    .button.red { background: rgba(208, 106, 91, 0.14); color: #873e33; }
-    .button.purple { background: rgba(140, 114, 200, 0.15); color: #5d4796; }
-    .button:active { transform: translateY(1px) scale(0.99); }
-    .button:focus-visible, .check:focus-visible { outline: 3px solid rgba(72, 112, 178, 0.45); outline-offset: 2px; }
-
-    @media (min-width: 460px) {
-      .actions.split { grid-template-columns: 1fr 1fr; }
-      .actions.triple { grid-template-columns: repeat(3, 1fr); }
-    }
-
-    .timer-face {
-      display: grid;
-      place-items: center;
-      min-height: 168px;
-      margin: 8px 0 14px;
-      border-radius: 24px;
-      background:
-        radial-gradient(circle at center, #fffdf7 0 50%, transparent 51%),
-        conic-gradient(from -90deg, var(--gold) var(--progress, 0%), rgba(45, 36, 25, 0.08) 0);
-    }
-    .time {
-      display: grid;
-      place-items: center;
-      width: 132px;
-      height: 132px;
-      border-radius: 50%;
-      background: #fffdf7;
-      font-size: 40px;
-      font-weight: 1000;
-      letter-spacing: -0.07em;
-      box-shadow: inset 0 0 0 1px var(--line);
-    }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-    }
-    .stat {
-      padding: 12px 10px;
-      border-radius: 18px;
-      background: rgba(255, 255, 255, 0.58);
-      border: 1px solid var(--line);
-    }
-    .stat b { display: block; font-size: 22px; line-height: 1; letter-spacing: -0.04em; }
-    .stat span { display: block; margin-top: 5px; color: var(--muted); font-size: 12px; font-weight: 800; }
-
-    .boss {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      margin-top: 12px;
-      padding: 13px;
-      border: 1px solid var(--line);
-      border-radius: 22px;
-      background: rgba(255, 255, 255, 0.5);
-    }
-    .goblin {
-      flex: 0 0 auto;
-      width: 62px;
-      height: 62px;
-      display: grid;
-      place-items: center;
-      border-radius: 22px;
-      background: #e7f2d9;
-      font-size: 35px;
-      transition: transform 240ms ease, filter 240ms ease;
-    }
-    .boss.weakened .goblin { transform: scale(0.78) rotate(-7deg); filter: saturate(0.8); }
-    .boss p { margin: 4px 0 0; color: var(--muted); font-size: 14px; line-height: 1.3; }
-
-    .ready-list {
-      display: grid;
-      gap: 8px;
-      margin-top: 12px;
-    }
-
-    .toast {
-      position: fixed;
-      left: 16px;
-      right: 16px;
-      bottom: calc(16px + env(safe-area-inset-bottom));
-      z-index: 4;
-      transform: translateY(180%);
-      opacity: 0;
-      pointer-events: none;
-      transition: transform 260ms ease, opacity 180ms ease;
-      border-radius: 18px;
-      padding: 14px 16px;
-      background: rgba(45, 36, 25, 0.92);
-      color: #fff9ea;
-      font-weight: 850;
-      box-shadow: 0 20px 42px rgba(0, 0, 0, 0.24);
-    }
-    .toast.show { transform: translateY(0); opacity: 1; }
-
-    .footer-note {
-      margin: 18px 4px 0;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.35;
-      text-align: center;
-    }
-
-    .tiny-link {
-      color: inherit;
-      text-decoration-thickness: 2px;
-      text-underline-offset: 3px;
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
-    }
+    .app { width: min(100%, 840px); margin: 0 auto; padding: max(16px, env(safe-area-inset-top)) 14px calc(116px + env(safe-area-inset-bottom)); }
+    header { display: grid; gap: 10px; padding: 8px 2px 14px; }
+    .topline { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .eyebrow { display:inline-flex; gap:8px; align-items:center; width:fit-content; padding:8px 12px; border:1px solid var(--line); border-radius:999px; background:rgba(255,252,244,.72); color:var(--muted); font-size:13px; font-weight:900; }
+    h1 { margin:0; font-size:clamp(38px, 12vw, 72px); line-height:.9; letter-spacing:-.065em; }
+    .subtitle { margin:0; color:var(--muted); font-size:16px; line-height:1.35; }
+    .page-dots { display:flex; gap:6px; }
+    .dot { width:9px; height:9px; border-radius:999px; background:rgba(45,36,25,.17); }
+    .dot.active { width:24px; background:var(--gold); }
+    .card { border:1px solid var(--line); border-radius:var(--radius-xl); background:var(--card); box-shadow:var(--shadow); overflow:hidden; backdrop-filter: blur(16px); }
+    .card::before { content:""; display:block; height:7px; background:linear-gradient(90deg, var(--gold), #f18e6b, #88be82, #8c72c8); }
+    .inner { padding:18px; }
+    .page { display:none; animation: pop .18s ease-out; }
+    .page.active { display:block; }
+    @keyframes pop { from { opacity:.35; transform:translateY(8px); } to { opacity:1; transform:none; } }
+    .label { display:inline-flex; align-items:center; justify-content:center; min-height:32px; padding:7px 10px; border-radius:999px; background:rgba(243,183,72,.18); color:#7b5313; border:1px solid rgba(123,83,19,.12); font-size:12px; font-weight:1000; text-transform:uppercase; letter-spacing:.02em; }
+    h2 { margin:10px 0 4px; font-size:clamp(30px, 10vw, 52px); line-height:.95; letter-spacing:-.06em; }
+    h3 { margin:0; font-size:21px; letter-spacing:-.035em; }
+    .micro { color:var(--muted); font-size:15px; line-height:1.38; margin:8px 0 0; }
+    .steps { display:grid; gap:10px; margin:18px 0; padding:0; list-style:none; }
+    .step { display:grid; grid-template-columns:40px 1fr; gap:11px; align-items:center; min-height:58px; padding:10px; border-radius:18px; border:1px solid var(--line); background:rgba(255,255,255,.58); }
+    .step.done { background:rgba(111,166,106,.14); opacity:.78; }
+    .check { width:38px; height:38px; border-radius:14px; border:1.5px solid rgba(45,36,25,.2); background:#fffdf7; display:grid; place-items:center; color:transparent; font-weight:1000; cursor:pointer; }
+    .step.done .check { color:#fff; background:var(--green); border-color:var(--green); }
+    .step-text { font-size:16px; font-weight:850; line-height:1.22; }
+    .boss { display:flex; gap:12px; align-items:center; margin:14px 0; padding:13px; border:1px solid var(--line); border-radius:22px; background:rgba(255,255,255,.52); }
+    .goblin { flex:0 0 auto; width:62px; height:62px; display:grid; place-items:center; border-radius:22px; background:#e7f2d9; font-size:35px; }
+    .boss.defeated .goblin { transform:scale(.82) rotate(-7deg); filter:saturate(.8); }
+    .timer-face { display:grid; place-items:center; min-height:174px; margin:14px 0; border-radius:24px; background:radial-gradient(circle at center, #fffdf7 0 50%, transparent 51%), conic-gradient(from -90deg, var(--gold) var(--progress, 0%), rgba(45,36,25,.08) 0); }
+    .time { display:grid; place-items:center; width:136px; height:136px; border-radius:50%; background:#fffdf7; box-shadow:inset 0 0 0 1px var(--line); font-size:42px; font-weight:1000; letter-spacing:-.07em; }
+    .actions { display:grid; grid-template-columns:1fr; gap:10px; margin-top:16px; }
+    .split { grid-template-columns:1fr 1fr; }
+    .triple { grid-template-columns:repeat(3, 1fr); }
+    .button { min-height:var(--tap); border:0; border-radius:18px; padding:13px 14px; color:var(--ink); background:#fff; box-shadow:inset 0 0 0 1px var(--line); font:inherit; font-weight:1000; font-size:15px; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; text-align:center; gap:7px; cursor:pointer; }
+    .button.primary { min-height:66px; color:#2d210c; background:linear-gradient(180deg, #ffe9aa, var(--gold)); box-shadow:0 14px 28px rgba(160,103,10,.24), inset 0 0 0 1px rgba(116,78,18,.16); font-size:19px; }
+    .green { background:rgba(111,166,106,.17); color:#345f31; }
+    .blue { background:rgba(109,149,189,.17); color:#315574; }
+    .red { background:rgba(208,106,91,.15); color:#873e33; }
+    .purple { background:rgba(140,114,200,.16); color:#5d4796; }
+    .button:active { transform:translateY(1px) scale(.99); }
+    .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin:14px 0; }
+    .stat { padding:11px 8px; border-radius:17px; background:rgba(255,255,255,.58); border:1px solid var(--line); }
+    .stat b { display:block; font-size:22px; line-height:1; letter-spacing:-.04em; }
+    .stat span { display:block; margin-top:5px; color:var(--muted); font-size:11px; font-weight:900; }
+    .chart { display:flex; align-items:end; gap:7px; height:138px; padding:14px 8px 8px; margin-top:12px; border:1px solid var(--line); border-radius:20px; background:rgba(255,255,255,.5); }
+    .bar-wrap { flex:1; min-width:0; display:grid; gap:5px; align-items:end; height:100%; }
+    .bar { width:100%; min-height:4px; border-radius:999px 999px 6px 6px; background:linear-gradient(180deg, var(--gold2), var(--gold)); box-shadow:inset 0 0 0 1px rgba(116,78,18,.08); }
+    .bar.level2 { background:linear-gradient(180deg, #d9ccff, var(--purple)); }
+    .bar-label { text-align:center; color:var(--muted); font-size:10px; font-weight:900; white-space:nowrap; overflow:hidden; text-overflow:clip; }
+    .insight { padding:13px; border-radius:20px; background:rgba(255,255,255,.55); border:1px solid var(--line); margin-top:12px; color:var(--muted); font-size:14px; line-height:1.35; font-weight:750; }
+    .bottom-nav { position:fixed; left:0; right:0; bottom:0; z-index:10; padding:10px 12px max(12px, env(safe-area-inset-bottom)); background:linear-gradient(180deg, rgba(255,247,231,0), rgba(255,247,231,.92) 20%, rgba(255,247,231,.98)); backdrop-filter: blur(10px); }
+    .nav-inner { width:min(100%,840px); margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .toast { position:fixed; left:16px; right:16px; bottom:calc(92px + env(safe-area-inset-bottom)); z-index:20; transform:translateY(180%); opacity:0; pointer-events:none; transition:transform .24s ease, opacity .18s ease; border-radius:18px; padding:14px 16px; background:rgba(45,36,25,.94); color:#fff9ea; font-weight:900; box-shadow:0 20px 42px rgba(0,0,0,.24); }
+    .toast.show { transform:translateY(0); opacity:1; }
+    .footer-note { margin:16px 4px 0; color:var(--muted); text-align:center; font-size:12px; line-height:1.35; }
+    @media (max-width: 390px) { .triple { grid-template-columns:1fr; } .stats { grid-template-columns:repeat(2,1fr); } }
+    @media (min-width: 760px) { .inner { padding:24px; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation:none !important; transition:none !important; } }
   </style>
 </head>
 <body>
-  <main class="wrap">
+  <main class="app">
     <header>
-      <div>
+      <div class="topline">
         <div class="eyebrow"><span>🌤️</span><span id="dateLabel">Today</span></div>
+        <div class="page-dots" aria-hidden="true" id="dots"></div>
+      </div>
+      <div>
         <h1>Morning Quest</h1>
-        <p class="subtitle">A tiny, no-shame launchpad. Start small, log the win, then get ready for the day.</p>
+        <p class="subtitle" id="subtitle">Tiny start. Real push. No shame.</p>
       </div>
     </header>
 
-    <section class="grid" aria-label="Morning Coach">
-      <article class="card quest-card">
-        <div class="card-inner">
-          <div class="card-title">
-            <div>
-              <h2>Today’s MVWorkout</h2>
-              <div class="quest-name" id="questName">Wake the Body</div>
-            </div>
-            <div class="pill">2–5 min</div>
-          </div>
-          <p class="microcopy" id="questCopy">Minimum viable. No heroic effort required.</p>
+    <section class="card" aria-live="polite">
+      <div class="inner">
+        <article class="page active" data-page="mvw">
+          <span class="label">Page 1 · MVW</span>
+          <h2 id="questName">Wake the Body</h2>
+          <p class="micro" id="questCopy">Minimum viable. No heroic effort required.</p>
           <ul class="steps" id="questSteps"></ul>
-          <p class="microcopy" id="bonusCopy"></p>
           <div class="boss" id="bossBox">
             <div class="goblin" aria-hidden="true">🐉</div>
-            <div>
-              <h3>Boss: Inertia Goblin</h3>
-              <p id="bossCopy">It loses power when you check off tiny actions.</p>
-            </div>
+            <div><h3>Boss: Inertia Goblin</h3><p class="micro" id="bossCopy">It loses power when you check off tiny actions.</p></div>
           </div>
-          <div class="actions">
-            <button class="button primary" id="doneBtn">DONE counts, even tiny ✅</button>
-          </div>
-          <div class="actions triple">
-            <button class="button blue" data-mood="EASIER">Make it easier</button>
-            <button class="button purple" data-mood="SORE">Sore/recovery</button>
-            <button class="button red" data-mood="SKIP">Skip, no shame</button>
-          </div>
-        </div>
-      </article>
+          <div class="timer-face" id="timerFace" style="--progress: 0%"><div class="time" id="timeText">2:00</div></div>
+          <div class="actions split"><button class="button green" id="timerStart">Start timer</button><button class="button" id="timerReset">Reset</button></div>
+        </article>
 
-      <aside class="card">
-        <div class="card-inner">
-          <div class="card-title">
-            <h2>Quest Timer</h2>
-            <div class="pill" id="timerPill">Ready</div>
-          </div>
-          <div class="timer-face" id="timerFace" style="--progress: 0%">
-            <div class="time" id="timeText">2:00</div>
+        <article class="page" data-page="effort">
+          <span class="label">Page 2 · Effort check</span>
+          <h2>How was the MVW?</h2>
+          <p class="micro">MVW is banked. Your answer chooses whether we push, repeat, or recover.</p>
+          <div class="stats">
+            <div class="stat"><b>+10</b><span>MVW XP</span></div>
+            <div class="stat"><b id="todaySteps">0/4</b><span>steps</span></div>
+            <div class="stat"><b id="todayLevel">1</b><span>level</span></div>
+            <div class="stat"><b id="todayMood">—</b><span>effort</span></div>
           </div>
           <div class="actions split">
-            <button class="button green" id="timerStart">Start</button>
-            <button class="button" id="timerReset">Reset</button>
+            <button class="button green" data-effort="EASY">EASY · push me</button>
+            <button class="button blue" data-effort="OKAY">OKAY · bonus</button>
+            <button class="button purple" data-effort="HARD">HARD · bank it</button>
+            <button class="button red" data-effort="TOO MUCH">TOO MUCH</button>
           </div>
-          <div class="stats" aria-label="Progress stats">
-            <div class="stat"><b id="xpStat">0</b><span>XP</span></div>
-            <div class="stat"><b id="streakStat">0</b><span>streak</span></div>
-            <div class="stat"><b id="winsStat">0</b><span>wins</span></div>
-          </div>
-        </div>
-      </aside>
+        </article>
 
-      <article class="card span">
-        <div class="card-inner">
-          <div class="card-title">
-            <div>
-              <h2>Get-ready checkpoint</h2>
-              <p class="microcopy" style="margin-top: 6px; margin-bottom: 0;">After movement, pick the next tiny domino.</p>
-            </div>
-            <div class="pill">Next</div>
-          </div>
-          <div class="ready-list" id="readySteps"></div>
+        <article class="page" data-page="level2">
+          <span class="label">Page 3 · Level 2</span>
+          <h2 id="bonusName">Bonus Push</h2>
+          <p class="micro" id="bonusCopy">Optional, but this is where minimum becomes momentum. Stop if form gets sloppy or anything hurts.</p>
+          <ul class="steps" id="bonusSteps"></ul>
+          <div class="boss" id="bonusBoss"><div class="goblin" aria-hidden="true">⚔️</div><div><h3>Extra sparkle</h3><p class="micro">Level 2 adds +5 XP and charts as a beyond-minimum win.</p></div></div>
+        </article>
+
+        <article class="page" data-page="ready">
+          <span class="label">Page 4 · Get ready</span>
+          <h2>Launch mode</h2>
+          <p class="micro">Movement is done. Now pick the next tiny domino so the morning actually launches.</p>
+          <ul class="steps" id="readySteps"></ul>
           <div class="actions split">
-            <a class="button green" id="textDone" href="sms:&body=DONE">Text DONE to Hermes</a>
+            <a class="button green" id="textDone" href="sms:&body=DONE">Text DONE</a>
             <button class="button" id="copySummary">Copy progress note</button>
           </div>
-        </div>
-      </article>
-    </section>
+        </article>
 
-    <p class="footer-note">Progress is saved privately in this browser on this phone. iMessage links open Messages; they do not send automatically.</p>
+        <article class="page" data-page="progress">
+          <span class="label">Page 5 · Progress</span>
+          <h2>Quest log</h2>
+          <p class="micro">Saved privately in this browser. Gold = MVW wins. Purple = Level 2 pushes.</p>
+          <div class="stats">
+            <div class="stat"><b id="xpStat">0</b><span>XP</span></div>
+            <div class="stat"><b id="streakStat">0</b><span>streak</span></div>
+            <div class="stat"><b id="winsStat">0</b><span>MVW wins</span></div>
+            <div class="stat"><b id="bonusStat">0</b><span>Level 2</span></div>
+          </div>
+          <div class="chart" id="chart" aria-label="Last 14 days progress chart"></div>
+          <div class="insight" id="insight">Do today’s MVW to start the chart.</div>
+          <div class="actions split"><button class="button blue" id="exportBtn">Copy 14-day summary</button><button class="button red" id="clearToday">Reset today</button></div>
+        </article>
+      </div>
+    </section>
+    <p class="footer-note">Web progress stays on this phone unless you also text Hermes. iMessage links open Messages; they do not send automatically.</p>
   </main>
 
+  <nav class="bottom-nav" aria-label="Quest actions"><div class="nav-inner" id="navActions"></div></nav>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script>
     const workouts = [
-      {
-        name: "Wake the Body",
-        copy: "Light the pilot flame. Stop before it becomes a production.",
-        steps: ["5 sit-to-stands or slow squats", "5 knee pushups, or 5 regular pushups if smooth", "20 seconds marching in place", "1 big stretch"],
-        bonus: "Optional treasure: pick up one dumbbell safely, set it down, and walk away victorious."
-      },
-      {
-        name: "Inertia Goblin",
-        copy: "The only goal is to break the freeze with tiny motion.",
-        steps: ["Put feet on floor + drink water", "5 knee pushups, or 5 regular pushups if smooth", "5 gentle hip hinges, no weight", "30 seconds easy walking/marching"],
-        bonus: "Optional treasure: 10-second suitcase hold with one dumbbell per side, only if it feels easy."
-      },
-      {
-        name: "Starter Engine",
-        copy: "Low drama. Smooth reps. Leave energy in the tank.",
-        steps: ["Stand up and roll shoulders 5 times", "5 sit-to-stands", "5 countertop, knee, or regular pushups", "20 seconds gentle march"],
-        bonus: "Optional treasure: one slow dumbbell pickup and put-down. No reps chase today."
-      },
-      {
-        name: "Minimum Win Mode",
-        copy: "For foggy mornings: make the win comically small.",
-        steps: ["Shoes or workout clothes on", "3 sit-to-stands", "3 knee or regular pushups", "One stretch while breathing slowly"],
-        bonus: "Optional treasure: repeat once if your body says yes."
-      }
+      { name:"Wake the Body", copy:"Light the pilot flame. Smooth reps. Leave energy in the tank.", steps:["5 sit-to-stands or slow squats", "5 knee pushups, or 5 regular pushups if smooth", "20 seconds marching in place", "1 big stretch"] },
+      { name:"Inertia Goblin", copy:"Break the freeze with tiny motion. The goblin hates beginnings.", steps:["Put feet on floor + drink water", "5 knee pushups, or 5 regular pushups if smooth", "5 gentle hip hinges, no weight", "30 seconds easy walking/marching"] },
+      { name:"Starter Engine", copy:"Low drama. Start the engine; do not redline it.", steps:["Stand up and roll shoulders 5 times", "5 sit-to-stands", "5 countertop, knee, or regular pushups", "20 seconds gentle march"] },
+      { name:"Minimum Win Mode", copy:"For foggy mornings: make the win comically small.", steps:["Shoes or workout clothes on", "3 sit-to-stands", "3 knee or regular pushups", "One stretch while breathing slowly"] }
     ];
-
-    const ready = ["Bathroom", "Get dressed", "Water or breakfast", "First outside-world step"];
+    const bonusRounds = [
+      { name:"Level 2: Goblin Chase", steps:["5 more knee or regular pushups, stop 2 reps before grindy", "8 slow sit-to-stands or squats", "30 seconds brisk walk/march"] },
+      { name:"Level 2: Strong Start", steps:["6 controlled pushups: countertop, knee, or regular", "8 gentle hip hinges, no weight unless it feels very easy", "20-second suitcase hold per side, one dumbbell only if safe"] },
+      { name:"Level 2: Momentum Token", steps:["Repeat your favorite MVW move once more", "30 seconds easy cardio: march, walk, or stairs", "One long stretch and water"] }
+    ];
+    const ready = ["Bathroom / wash face / shower", "Get dressed", "Water or breakfast", "First outside-world step"];
+    const pages = ["mvw", "effort", "level2", "ready", "progress"];
     const params = new URLSearchParams(location.search);
-    const today = params.get("day") || new Date().toISOString().slice(0, 10);
-    const stateKey = "morning-coach-v1";
+    const today = params.get("day") || new Date().toISOString().slice(0,10);
+    const stateKey = "morning-coach-v2";
     const dayKey = `${stateKey}:${today}`;
     const $ = (id) => document.getElementById(id);
-
-    function hashDay(s) {
-      let h = 2166136261;
-      for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
-      return Math.abs(h);
-    }
-
+    function hashDay(s){ let h=2166136261; for(let i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=Math.imul(h,16777619);} return Math.abs(h); }
     const requestedWorkout = params.get("workout");
     const quest = workouts.find(w => w.name.toLowerCase() === String(requestedWorkout || "").toLowerCase()) || workouts[hashDay(today) % workouts.length];
-    const dateObj = new Date(`${today}T12:00:00`);
-    $("dateLabel").textContent = dateObj.toLocaleDateString(undefined, { weekday: "long", month: "short", day: "numeric" });
-    $("questName").textContent = quest.name;
-    $("questCopy").textContent = quest.copy;
-    $("bonusCopy").textContent = quest.bonus;
+    const bonus = bonusRounds[hashDay(`bonus-${today}`) % bonusRounds.length];
+    const defaultStore = { xp:0, wins:0, bonusWins:0, streak:0, lastDone:"", history:{} };
+    const defaultDay = { page:"mvw", steps:[], bonusSteps:[], ready:[], done:false, bonusDone:false, effort:"", skipped:false, sore:false, pain:false };
+    function readJSON(key, fallback){ try { return { ...fallback, ...(JSON.parse(localStorage.getItem(key)) || {}) }; } catch { return { ...fallback }; } }
+    function getStore(){ const s = readJSON(stateKey, defaultStore); s.history = s.history || {}; return s; }
+    function setStore(v){ localStorage.setItem(stateKey, JSON.stringify(v)); }
+    function getDay(){ return readJSON(dayKey, defaultDay); }
+    function setDay(v){ localStorage.setItem(dayKey, JSON.stringify(v)); }
+    let store = getStore(); let day = getDay(); let current = day.page || "mvw";
 
-    function getStore() {
-      try { return JSON.parse(localStorage.getItem(stateKey)) || { xp: 0, wins: 0, streak: 0, lastDone: "" }; }
-      catch { return { xp: 0, wins: 0, streak: 0, lastDone: "" }; }
-    }
-    function setStore(v) { localStorage.setItem(stateKey, JSON.stringify(v)); }
-    function getDay() {
-      try { return JSON.parse(localStorage.getItem(dayKey)) || { steps: [], ready: [], done: false, mood: "" }; }
-      catch { return { steps: [], ready: [], done: false, mood: "" }; }
-    }
-    function setDay(v) { localStorage.setItem(dayKey, JSON.stringify(v)); }
+    $("dateLabel").textContent = new Date(`${today}T12:00:00`).toLocaleDateString(undefined, { weekday:"long", month:"short", day:"numeric" });
+    $("questName").textContent = quest.name; $("questCopy").textContent = quest.copy; $("bonusName").textContent = bonus.name;
+    function toast(msg){ const t=$("toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(t._hide); t._hide=setTimeout(()=>t.classList.remove("show"),2800); }
+    function daysBetween(a,b){ return Math.round((new Date(`${b}T12:00:00`) - new Date(`${a}T12:00:00`))/86400000); }
+    function saveHistory(){ store.history[today] = { done:!!day.done, bonusDone:!!day.bonusDone, effort:day.effort||"", skipped:!!day.skipped, sore:!!day.sore, pain:!!day.pain, workout:quest.name, xp:(day.done?10:0)+(day.bonusDone?5:0) }; setStore(store); }
+    function bankMVW(){ if(!day.done){ day.done=true; day.doneAt=new Date().toISOString(); day.steps=[...Array(quest.steps.length).keys()]; store.xp=(store.xp||0)+10; store.wins=(store.wins||0)+1; if(store.lastDone===today){} else if(store.lastDone && daysBetween(store.lastDone,today)===1){ store.streak=(store.streak||0)+1; } else { store.streak=1; } store.lastDone=today; } saveHistory(); setDay(day); }
+    function completeBonus(){ bankMVW(); if(!day.bonusDone){ day.bonusDone=true; day.bonusAt=new Date().toISOString(); day.bonusSteps=[...Array(bonus.steps.length).keys()]; store.xp=(store.xp||0)+5; store.bonusWins=(store.bonusWins||0)+1; toast("Bonus logged ✅ +5 XP. Beyond minimum!"); } saveHistory(); setDay(day); go("ready"); }
+    function go(page){ current=page; day.page=page; setDay(day); renderAll(); window.scrollTo({top:0, behavior:"smooth"}); }
+    function toggle(arrName, i){ const arr=day[arrName] || []; day[arrName] = arr.includes(i) ? arr.filter(x=>x!==i) : [...arr,i]; setDay(day); renderAll(); }
+    function renderList(id, items, arrName){ const ul=$(id); ul.innerHTML=""; items.forEach((text,i)=>{ const li=document.createElement("li"); li.className=`step ${(day[arrName]||[]).includes(i)?"done":""}`; li.innerHTML=`<button class="check" aria-label="Toggle step ${i+1}">✓</button><div class="step-text"></div>`; li.querySelector(".step-text").textContent=text; li.querySelector(".check").addEventListener("click",()=>toggle(arrName,i)); ul.appendChild(li); }); }
+    function renderPages(){ document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active", p.dataset.page===current)); $("dots").innerHTML=pages.map(p=>`<span class="dot ${p===current?'active':''}"></span>`).join(""); const titles={mvw:"Tiny start. Real push. No shame.",effort:"Bank the win, then choose the push.",level2:"Beyond minimum: one more small round.",ready:"Turn movement into a smoother launch.",progress:"Charts make the invisible visible."}; $("subtitle").textContent=titles[current]||titles.mvw; }
+    function renderStats(){ store=getStore(); day=getDay(); $("todaySteps").textContent=`${day.steps.length}/${quest.steps.length}`; $("todayLevel").textContent=day.bonusDone?"2":day.done?"1":"0"; $("todayMood").textContent=day.effort || "—"; $("xpStat").textContent=store.xp||0; $("streakStat").textContent=store.streak||0; $("winsStat").textContent=store.wins||0; $("bonusStat").textContent=store.bonusWins||0; $("bossBox").classList.toggle("defeated", day.done || day.steps.length>0); $("bossCopy").textContent = day.done ? "Defeated. MVW win is banked." : day.steps.length ? "It is already smaller. Tiny actions are working." : "It loses power when you check off tiny actions."; }
+    function renderChart(){ const chart=$("chart"); chart.innerHTML=""; const dates=[]; const base=new Date(`${today}T12:00:00`); for(let i=13;i>=0;i--){ const d=new Date(base); d.setDate(base.getDate()-i); dates.push(d.toISOString().slice(0,10)); } const max=15; dates.forEach(d=>{ const rec=(store.history||{})[d] || {}; const xp=rec.xp||0; const wrap=document.createElement("div"); wrap.className="bar-wrap"; const bar=document.createElement("div"); bar.className=`bar ${rec.bonusDone?'level2':''}`; bar.style.height=`${Math.max(4,(xp/max)*100)}%`; bar.title=`${d}: ${xp} XP`; const label=document.createElement("div"); label.className="bar-label"; label.textContent=new Date(`${d}T12:00:00`).toLocaleDateString(undefined,{weekday:"short"}).slice(0,1); wrap.append(bar,label); chart.appendChild(wrap); }); const hist=Object.values(store.history||{}); const wins=hist.filter(x=>x.done).length, b=hist.filter(x=>x.bonusDone).length; $("insight").textContent = wins ? `You have ${wins} MVW wins and ${b} Level 2 pushes in this browser. Beyond-minimum ratio: ${Math.round((b/Math.max(wins,1))*100)}%.` : "Do today’s MVW to start the chart."; }
+    function renderLinks(){ const summary = day.bonusDone ? `DONE MORE — ${quest.name}, ${day.effort}` : day.done ? `DONE — ${quest.name}, ${day.effort || 'effort not logged'}` : `${quest.name}: ${day.steps.length}/${quest.steps.length}`; $("textDone").href = `sms:&body=${encodeURIComponent(summary)}`; }
+    function navButton(text, cls, fn){ const b=document.createElement("button"); b.className=`button ${cls||""}`; b.textContent=text; b.addEventListener("click", fn); return b; }
+    function renderNav(){ const nav=$("navActions"); nav.innerHTML=""; if(current==="mvw"){ nav.append(navButton("DONE · bank MVW ✅","primary",()=>{ bankMVW(); toast("MVW banked ✅ +10 XP"); go("effort"); }), navButton("Easier / sore / skip","",()=>go("effort"))); }
+      else if(current==="effort"){ nav.append(navButton("Progress chart","",()=>go("progress")), navButton("Get ready","green",()=>go("ready"))); }
+      else if(current==="level2"){ nav.append(navButton("DONE +5 XP","primary",completeBonus), navButton("Skip, bank MVW","",()=>{ bankMVW(); toast("MVW banked. Bonus skipped without shame."); go("ready"); })); }
+      else if(current==="ready"){ nav.append(navButton("Progress chart","primary",()=>go("progress")), navButton("Back to Level 2","purple",()=>go("level2"))); }
+      else { nav.append(navButton("Today’s MVW","primary",()=>go("mvw")), navButton("Get ready","green",()=>go("ready"))); } }
+    function renderAll(){ day=getDay(); current=day.page||current; renderPages(); renderList("questSteps", quest.steps, "steps"); renderList("bonusSteps", bonus.steps, "bonusSteps"); renderList("readySteps", ready, "ready"); renderStats(); renderChart(); renderLinks(); renderNav(); }
 
-    let day = getDay();
-    let store = getStore();
-
-    function toast(msg) {
-      const t = $("toast");
-      t.textContent = msg;
-      t.classList.add("show");
-      clearTimeout(t._hide);
-      t._hide = setTimeout(() => t.classList.remove("show"), 2800);
-    }
-
-    function renderSteps() {
-      const questSteps = $("questSteps");
-      questSteps.innerHTML = "";
-      quest.steps.forEach((text, i) => {
-        const li = document.createElement("li");
-        li.className = `step ${day.steps.includes(i) ? "done" : ""}`;
-        li.innerHTML = `<button class="check" aria-label="Toggle step ${i + 1}">✓</button><div class="step-text"></div>`;
-        li.querySelector(".step-text").textContent = text;
-        li.querySelector(".check").addEventListener("click", () => {
-          day.steps = day.steps.includes(i) ? day.steps.filter(x => x !== i) : [...day.steps, i];
-          setDay(day); renderAll();
-        });
-        questSteps.appendChild(li);
-      });
-
-      const readySteps = $("readySteps");
-      readySteps.innerHTML = "";
-      ready.forEach((text, i) => {
-        const row = document.createElement("div");
-        row.className = `step ${day.ready.includes(i) ? "done" : ""}`;
-        row.innerHTML = `<button class="check" aria-label="Toggle ${text}">✓</button><div class="step-text"></div>`;
-        row.querySelector(".step-text").textContent = text;
-        row.querySelector(".check").addEventListener("click", () => {
-          day.ready = day.ready.includes(i) ? day.ready.filter(x => x !== i) : [...day.ready, i];
-          setDay(day); renderAll();
-        });
-        readySteps.appendChild(row);
-      });
-    }
-
-    function daysBetween(a, b) {
-      return Math.round((new Date(`${b}T12:00:00`) - new Date(`${a}T12:00:00`)) / 86400000);
-    }
-
-    function logDone() {
-      if (!day.done) {
-        day.done = true;
-        day.steps = [...new Set([...day.steps, 0])];
-        day.doneAt = new Date().toISOString();
-        store.xp = (store.xp || 0) + 10;
-        store.wins = (store.wins || 0) + 1;
-        if (store.lastDone === today) {
-          // no-op
-        } else if (store.lastDone && daysBetween(store.lastDone, today) === 1) {
-          store.streak = (store.streak || 0) + 1;
-        } else {
-          store.streak = 1;
-        }
-        store.lastDone = today;
-        setStore(store);
-        setDay(day);
-      }
-      toast("Logged: DONE ✅ +10 XP. Tiny counts.");
-      renderAll();
-    }
-
-    function renderStats() {
-      $("xpStat").textContent = store.xp || 0;
-      $("streakStat").textContent = store.streak || 0;
-      $("winsStat").textContent = store.wins || 0;
-      const progress = day.steps.length / quest.steps.length;
-      $("bossBox").classList.toggle("weakened", progress > 0 || day.done);
-      $("bossCopy").textContent = day.done ? "Defeated for today. Future-you receives +1 smoother launch." : progress > 0 ? "It is already smaller. Tiny actions are working." : "It loses power when you check off tiny actions.";
-      $("doneBtn").textContent = day.done ? "DONE logged ✅" : "DONE counts, even tiny ✅";
-    }
-
-    function renderLinks() {
-      const body = encodeURIComponent(day.done ? "DONE" : `Morning Coach: ${quest.name} — DONE`);
-      $("textDone").setAttribute("href", `sms:&body=${body}`);
-    }
-
-    function renderAll() { renderSteps(); renderStats(); renderLinks(); }
-
-    $("doneBtn").addEventListener("click", logDone);
-    document.querySelectorAll("[data-mood]").forEach(btn => btn.addEventListener("click", () => {
-      day.mood = btn.dataset.mood;
-      if (day.mood === "EASIER") {
-        day.steps = day.steps.slice(0, 1);
-        toast("Downshifted: one tiny action is enough today.");
-      } else if (day.mood === "SORE") {
-        toast("Recovery mode counts: water + gentle stretch only.");
-      } else {
-        toast("Skipped without shame. Water or one stretch can still count.");
-      }
-      setDay(day); renderAll();
-    }));
-
-    $("copySummary").addEventListener("click", async () => {
-      const note = day.done ? `DONE — ${quest.name}. Felt: ${day.mood || "not logged yet"}` : `${quest.name}: ${day.steps.length}/${quest.steps.length} tiny steps done`;
-      try { await navigator.clipboard.writeText(note); toast("Copied progress note."); }
-      catch { toast(note); }
-    });
-
-    let total = 120, remaining = total, timer = null;
-    function drawTimer() {
-      const m = Math.floor(remaining / 60), s = String(remaining % 60).padStart(2, "0");
-      $("timeText").textContent = `${m}:${s}`;
-      const pct = ((total - remaining) / total) * 100;
-      $("timerFace").style.setProperty("--progress", `${pct}%`);
-      $("timerPill").textContent = timer ? "Moving" : remaining === total ? "Ready" : remaining === 0 ? "Complete" : "Paused";
-      $("timerStart").textContent = timer ? "Pause" : remaining === 0 ? "Again" : "Start";
-    }
-    $("timerStart").addEventListener("click", () => {
-      if (remaining === 0) remaining = total;
-      if (timer) { clearInterval(timer); timer = null; drawTimer(); return; }
-      timer = setInterval(() => {
-        remaining = Math.max(0, remaining - 1);
-        drawTimer();
-        if (remaining === 0) { clearInterval(timer); timer = null; toast("Timer complete. That counts."); drawTimer(); }
-      }, 1000);
-      drawTimer();
-    });
-    $("timerReset").addEventListener("click", () => { clearInterval(timer); timer = null; remaining = total; drawTimer(); });
-
-    renderAll();
-    drawTimer();
+    document.querySelectorAll("[data-effort]").forEach(btn=>btn.addEventListener("click",()=>{ bankMVW(); day.effort=btn.dataset.effort; if(day.effort==="EASY" || day.effort==="OKAY"){ toast(`${day.effort} logged. Level 2 unlocked ⚔️`); setDay(day); saveHistory(); go("level2"); } else if(day.effort==="HARD"){ toast("HARD logged. MVW is enough today."); setDay(day); saveHistory(); go("ready"); } else { day.sore=true; toast("TOO MUCH logged. Recovery mode."); setDay(day); saveHistory(); go("ready"); } }));
+    $("copySummary").addEventListener("click", async()=>{ const note = day.bonusDone ? `DONE MORE — ${quest.name}. Effort: ${day.effort}` : day.done ? `DONE — ${quest.name}. Effort: ${day.effort || 'not logged'}` : `${quest.name}: ${day.steps.length}/${quest.steps.length} steps`; try{ await navigator.clipboard.writeText(note); toast("Copied progress note."); } catch { toast(note); } });
+    $("exportBtn").addEventListener("click", async()=>{ const text = Object.entries(store.history||{}).sort().slice(-14).map(([d,r])=>`${d}: ${r.done?'MVW':'—'} ${r.bonusDone?'+ Level2':''} ${r.effort||''}`).join("\n") || "No quest log yet"; try{ await navigator.clipboard.writeText(text); toast("Copied 14-day summary."); } catch { toast(text); } });
+    $("clearToday").addEventListener("click",()=>{ localStorage.removeItem(dayKey); delete store.history[today]; setStore(store); day=getDay(); current="mvw"; toast("Today reset locally."); renderAll(); });
+    let total=120, remaining=total, timer=null; function drawTimer(){ const m=Math.floor(remaining/60), s=String(remaining%60).padStart(2,"0"); $("timeText").textContent=`${m}:${s}`; $("timerFace").style.setProperty("--progress", `${((total-remaining)/total)*100}%`); $("timerStart").textContent=timer?"Pause timer":remaining===0?"Again":"Start timer"; }
+    $("timerStart").addEventListener("click",()=>{ if(remaining===0) remaining=total; if(timer){ clearInterval(timer); timer=null; drawTimer(); return; } timer=setInterval(()=>{ remaining=Math.max(0, remaining-1); drawTimer(); if(remaining===0){ clearInterval(timer); timer=null; toast("Timer complete. That counts."); drawTimer(); } },1000); drawTimer(); });
+    $("timerReset").addEventListener("click",()=>{ clearInterval(timer); timer=null; remaining=total; drawTimer(); });
+    renderAll(); drawTimer();
   </script>
 </body>
 </html>
